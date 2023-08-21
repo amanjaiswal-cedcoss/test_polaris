@@ -1,0 +1,10 @@
+.App {
+  text-align: center;
+}
+
+.cent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+}
