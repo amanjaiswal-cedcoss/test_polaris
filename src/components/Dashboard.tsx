@@ -1,11 +1,7 @@
 import {
-    ActionList,
-    Frame,
     Layout,
-    Navigation,
     Page,
     TextField,
-    TopBar,
     Button,
     Form,
     Card,
@@ -19,27 +15,15 @@ import {
     IndexTable,
     Badge,
     useIndexResourceState,
+    DatePicker,
 } from '@shopify/polaris';
 import {
-    HomeMajor,
-    OrdersMajor,
-    ProductsMajor,
-    ReturnsMajor,
-    ActivitiesMajor,
     QuestionMarkMajor,
     MobileVerticalDotsMajor,
 } from '@shopify/polaris-icons';
-import { useState, useCallback, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useCallback} from 'react';
 type InputKeysT = 'title' | 'status' | 'price' | 'comparePrice' | 'onlineStore' | 'pointOfSale' | 'indAndInt';
-const Home = () => {
-    const defaultState = useRef({
-        emailFieldValue: 'amanjaiswal@cedcommerce.com',
-        nameFieldValue: 'Aman Jaiswal',
-    });
-    const [searchActive, setSearchActive] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [userMenuActive, setUserMenuActive] = useState(false);
+const Dashboard = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [state, setState] = useState({
         title: '',
@@ -50,102 +34,20 @@ const Home = () => {
         pointOfSale: false,
         indAndInt: false,
     });
+    const [{ month, year }, setDate] = useState({ month: new Date().getMonth(), year: new Date().getFullYear() });
+    const [selectedDates, setSelectedDates] = useState({
+        start: new Date(),
+        end: new Date(),
+    });
+
+    const handleMonthChange = useCallback((month: number, year: number) => setDate({ month, year }), []);
     const handleChange = (key: InputKeysT, value: string | boolean) => {
         setState((prev) => {
-            let obj= Object.assign(prev, { [key]: value });
-            return {...obj};
+            let obj = Object.assign(prev, { [key]: value });
+            return { ...obj };
         });
-    };
-    const handleSearchResultsDismiss = useCallback(() => {
-        setSearchActive(false);
-        setSearchValue('');
-    }, []);
-    const handleSearchFieldChange = useCallback((value: string) => {
-        setSearchValue(value);
-        setSearchActive(value.length > 0);
-    }, []);
-    const toggleUserMenuActive = useCallback(() => setUserMenuActive((userMenuActive) => !userMenuActive), []);
+    }; 
 
-    const userMenuMarkup = (
-        <TopBar.UserMenu
-            actions={[]}
-            name="Aman Jaiswal"
-            detail={defaultState.current.nameFieldValue}
-            initials="AJ"
-            open={userMenuActive}
-            onToggle={toggleUserMenuActive}
-        />
-    );
-
-    const searchResultsMarkup = (
-        <ActionList items={[{ content: 'Shopify help center' }, { content: 'Community forums' }]} />
-    );
-
-    const searchFieldMarkup = (
-        <TopBar.SearchField onChange={handleSearchFieldChange} value={searchValue} placeholder="Search" />
-    );
-
-    const topBarMarkup = (
-        <TopBar
-            showNavigationToggle
-            userMenu={userMenuMarkup}
-            searchResultsVisible={searchActive}
-            searchField={searchFieldMarkup}
-            searchResults={searchResultsMarkup}
-            onSearchResultsDismiss={handleSearchResultsDismiss}
-        />
-    );
-    const location = useLocation();
-    const navigationMarkup = (
-        <Navigation location={location.pathname.substring(1,location.pathname.length)}>
-            <Navigation.Section
-                items={[
-                    {
-                        label: 'Dashboard',
-                        icon: HomeMajor,
-                        url: 'dashboard',
-                    },
-                    {
-                        label: 'Products',
-                        icon: ProductsMajor,
-                        url: 'products',
-                    },
-                    {
-                        label: 'Orders',
-                        icon: OrdersMajor,
-                        badge: '10',
-                        url: 'orders',
-                    },
-                    {
-                        label: 'Returns',
-                        icon: ReturnsMajor,
-                        url: 'returns',
-                    },
-
-                    {
-                        label: 'Activities',
-                        icon: ActivitiesMajor,
-                        url: 'activities',
-                    },
-                    {
-                        label: 'Help',
-                        icon: QuestionMarkMajor,
-                        url: 'help',
-                    },
-                ]}
-            />
-        </Navigation>
-    );
-
-    const logo = {
-        width: 124,
-        topBarSource:
-            'https://cdn.shopify.com/s/files/1/0446/6937/files/jaded-pixel-logo-color.svg?6215648040070010999',
-        contextualSaveBarSource:
-            'https://cdn.shopify.com/s/files/1/0446/6937/files/jaded-pixel-logo-gray.svg?6215648040070010999',
-        url: '#',
-        accessibilityLabel: 'Jaded Pixel',
-    };
 
     const handleDropZoneDrop = useCallback((_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) => {
         return setFiles((files) => [...files, ...acceptedFiles]);
@@ -201,14 +103,11 @@ const Home = () => {
             <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell>
         </IndexTable.Row>
     ));
+
     return (
-        <Frame logo={logo} topBar={topBarMarkup} navigation={navigationMarkup}>
             <Page
-                backAction={{ url: '#' }}
-                title="Products"
-                fullWidth
-                primaryAction={{ content: 'Create' }}
-                secondaryActions={<Button>Guide</Button>}>
+                title="Dashboard"
+                fullWidth>
                 <Layout>
                     <Layout.Section oneHalf>
                         <VerticalStack gap="5">
@@ -349,9 +248,6 @@ const Home = () => {
                                 sortable={[true, false, true, false, true]}
                                 sortDirection="ascending"
                                 hasZebraStriping
-                                onSort={(sort, sel) => {
-                                    console.log(sort, sel);
-                                }}
                                 resourceName={resourceName}
                                 itemCount={orders.length}
                                 selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
@@ -369,10 +265,25 @@ const Home = () => {
                             </IndexTable>
                         </Card>
                     </Layout.Section>
+                    <Layout.Section fullWidth>
+                        <Card>
+                            <VerticalStack gap="3">
+                                <Text alignment="start" variant="headingSm" as="h2">
+                                    Select Date
+                                </Text>
+                                <DatePicker
+                                    month={month}
+                                    year={year}
+                                    onChange={setSelectedDates}
+                                    onMonthChange={handleMonthChange}
+                                    selected={selectedDates}
+                                />
+                            </VerticalStack>
+                        </Card>
+                    </Layout.Section>
                 </Layout>
             </Page>
-        </Frame>
     );
 };
 
-export default Home;
+export default Dashboard;

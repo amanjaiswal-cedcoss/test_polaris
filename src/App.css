@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  /* overflow-x: hidden; */
 }
 
 .cent {
@@ -7,4 +8,82 @@
   justify-content: center;
   align-items: center;
   min-height: 100%;
+}
+
+.fullscr-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.fullscr-bar .Polaris-OptionList-Option__Label.Polaris-OptionList-Option--select {
+  background: transparent;
+}
+
+.fullscr-bar .Polaris-FullscreenBar__BackAction::after {
+  content: "Back";
+  margin-left: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+}
+
+.fullscr-bar__nav{
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px 0 12px;
+}
+
+.fullscr-bar__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.bulkedit-grid{
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.bulkedit-grid .Polaris-IndexTable__Table{
+  border:1px solid #e3e3e3;
+}
+
+.bulkedit-grid .Polaris-IndexTable__Table th,.bulkedit-grid .Polaris-IndexTable__Table td{
+  border:1px solid #e3e3e3;
+  border-collapse: collapse;
+}
+
+.bulkedit-grid .Polaris-IndexTable__Table th{
+  border-width: 2px;
+  border-left-width:0px ;
+  border-right-width:1px ;
+}
+
+.bulkedit-grid *{
+  font-size: 12px !important;
+}
+
+.bulkedit-grid input{
+  border: none;
+  outline: none;
+  min-height: 25px !important;
+  min-width: 150px;
+}
+
+.bulkedit-grid input:focus{
+  border: none !important;
+  outline: none !important;
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.curved-tag .Polaris-Tag {
+  border-radius: 20px;
+}
+
+.autocomp-tags .Polaris-TextField__VerticalContent{
+  overflow: hidden;
 }
